@@ -91,7 +91,7 @@ class Applicant extends User{
 			}
 			else{
 				$this->setPresentLimit($this->getPresentLimit() + $grantMoney);
-				$_SESSION['result'] = " Grant not Requested";
+				$_SESSION['result'] = "Sorry your grant is not Requested";
 				$this->setNumberOfGrantsRequested(-1);
 				$sql2 = "DELETE FROM grantdata WHERE grantId = '$grantId' ";
 				$success = $_SESSION['databaseObj']->updateQuery($con,$sql2);
@@ -99,7 +99,7 @@ class Applicant extends User{
 			}
 		}
 		else{
-			$_SESSION['result'] = "Grant not requested";
+			$_SESSION['result'] = "Sorry your grant is not Requested";
 			$this->setNumberOfGrantsRequested(-1);
 			return "Unsuccess";
 		}
@@ -265,7 +265,7 @@ class Admin extends User{
 			if($grant['moneyGiven']==0 && $grant['grantStatus']=="Approved"){
 				$sql2 = "UPDATE grantdata SET moneyGiven = '1' WHERE grantId='$grantId' ";
 				if($_SESSION['databaseObj']->updateQuery($con,$sql2)){
-					$_SESSION['result'] = "Success";
+					$_SESSION['result'] = "Success! Please give money to applicant";
 					return true;
 				}
 			}

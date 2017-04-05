@@ -6,12 +6,14 @@ function __autoload($class_name) {
 session_start();
 if(isset($_SESSION['login'])==true){
 	if($_SESSION["obj"]->getUserName()!="admin"){
-		//echo "rajat";
 		if(isset($_POST['grantButton'])){
 			$grantType = $_POST['grantType'];
 			$grantMoney = $_POST['grantMoney'];
-			if($grantType == '' || $grantMoney == ''){
+			if($grantType == "Select" || $grantMoney == ''){
 				$_SESSION['result'] = 'Please fill all fields!';
+			}
+			else if($grantMoney <= 0 ){
+				$_SESSION['result'] = 'Money must be a positive number';
 			}
 			else{
 				$target_dir = "uploads/";
@@ -24,8 +26,8 @@ if(isset($_SESSION['login'])==true){
 					$uploadOk = 0;
 				}
 				$size=$_FILES["fileToUpload"]["size"];
-				if ($size> 4194304) {
-					$_SESSION['result'] = "Sorry, your file is too large.";
+				if ($size> 2097152 || $size==0) {
+					$_SESSION['result'] = "Sorry, your file size is not appropriate";
 					$uploadOk = 0;
 				}
 				if($fileType != "pdf" ) {
@@ -33,7 +35,7 @@ if(isset($_SESSION['login'])==true){
 					$uploadOk = 0;
 				}
 				if ($uploadOk == 0) {
-					$_SESSION['result'] .=  " Sorry, your file was not uploaded.";
+					$_SESSION['result'] .=  " Your file was not uploaded.";
 				} 
 				else {
 					if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
@@ -54,10 +56,7 @@ if(isset($_SESSION['login'])==true){
 						rename($target_file, $fileName);
 					}
 				}
-				else if($uploadOk==0){
-					
-				}
-				else{
+				else if($grantMoney > $_SESSION["obj"]->getPresentLimit()){
 					unlink($target_file);
 					$_SESSION['result'] = "Not Enough Money Left";
 				}
@@ -75,6 +74,7 @@ if(isset($_SESSION['login'])==true){
 		}
 	}
 	else{
+		//$_SESSION['result'] = "Oye lode";
 		header("Location:profile_admin.php");
 	}
 }
